@@ -2,8 +2,6 @@ import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 
-
-
 def operate(url,line):
 	try:
 		r = requests.get(url,verify=False, allow_redirects=True,timeout=3)

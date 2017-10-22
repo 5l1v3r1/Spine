@@ -1,3 +1,5 @@
+# Implementation of Spine using Pycurl over Requests, since benchmark results say Pycurl is faster then requests
+
 import pycurl
 import threading
 

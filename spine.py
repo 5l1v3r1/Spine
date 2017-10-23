@@ -57,7 +57,7 @@ def main(list):
 				domain = line.rstrip()
 				furl = "http://"+domain+(payload.rstrip())
 				print (Style.RESET_ALL+furl)
-				operate(furl,domain, payload),payload
+				operate(furl,domain, payload)
 
 
 

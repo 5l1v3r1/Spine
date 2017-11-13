@@ -104,7 +104,7 @@ if __name__ == "__main__":
 		try:
 			spine.main()
 		except KeyboardInterrupt:
-			print(Style.RESET_ALL+Fore.GREEN+Style.DIM+"[+] Finished!"+Style.RESET_ALL)
+			print(Style.RESET_ALL+Fore.GREEN+Style.DIM+"\r\n[+] Finished!"+Style.RESET_ALL)
 	        try:
 	            sys.exit(0)
 	        except SystemExit:

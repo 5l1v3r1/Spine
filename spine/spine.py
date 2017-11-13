@@ -62,12 +62,14 @@ class Spine:
 		except:
 			pass
 
-	def worker(self):
-		while True:
+	def worker(self, kill_event):
+		t = threading.currentThread()
+		while not kill_event.wait(1):
 			if self.queue.empty() != True:
 				self.reqUrl(self.queue.get())
 			else:
 				print(Style.RESET_ALL+Fore.RED+Style.DIM+"[+] Stopping threads..." + Style.RESET_ALL)
+
 
 
 	def main(self):
@@ -75,14 +77,21 @@ class Spine:
 		for target_domain in self.input_file:
 			for payload in self.payloads:
 				self.queue.put([target_domain, payload])
+		thread_killer = threading.Event()
 		for i in range(self.thread_count):
-			t = threading.Thread(target=self.worker, args=())
+			t = threading.Thread(target=self.worker, args=(thread_killer,))
 			t.daemon = True
 			self.threads.append(t)
 			t.start()
 
-		for thread in self.threads:
-			thread.join()
+		while True:
+			try:
+				pass
+			except KeyboardInterrupt:
+				thread_killer.set()
+				for thread in self.threads:
+					thread.join()
+				break
 
 
 if __name__ == "__main__":
@@ -90,13 +99,12 @@ if __name__ == "__main__":
         print("Usage: python spine.py inputlist")
         sys.exit()
     else:
-		keep_running = True
 		print (Fore.YELLOW+"[-] Starting OpenRedirection Check..."+"\n")
 		spine = Spine()
 		try:
 			spine.main()
 		except KeyboardInterrupt:
-			keep_running = False
+			print(Style.RESET_ALL+Fore.GREEN+Style.DIM+"[+] Finished!"+Style.RESET_ALL)
 	        try:
 	            sys.exit(0)
 	        except SystemExit:

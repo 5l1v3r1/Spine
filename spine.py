@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-# Toss
+
  #################################################
  # Scan OR, CRLF, CORS and others on Large Scan  #
  # by: Intercept9                                #
  # twitter.com/_SiddhuVarma                      #
  # http://intercept9.gitlab.io/                  #
  #################################################
+
 
 import requests
 import sys
@@ -14,42 +15,28 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from colorama import init, Fore, Back, Style
 init()
 
-def banner():
-	
-	print(Fore.GREEN+Style.DIM+"""
+Redirlist = ("https://google.com", "http://google.com", "http://www.google.com", "https://www.google.com")
+Redirbuff = []
+Crlfbuff = []
 
-                    _,    _   _    ,_
-               .o888P     Y8o8Y     Y888o.
-              d88888      88888      88888b
-             d888888b_  _d88888b_  _d888888b
-             8888888888888888888888888888888
-             8888888888888888888888888888888
-             YJGS8P"Y888P"Y888P"Y888P"Y8888P
-              Y888   '8'   Y8P   '8'   888Y
-               '8o          V          o8'
-                 `                     `
-		  Coded by Intercept9
-		""")
-
-def operate(url,line,payload):
+def Redirector(url,line,payload):
 	try:
-		r = requests.get(url,verify=False, allow_redirects=True,timeout=3)
+		r = requests.get(url,verify=True, allow_redirects=True,timeout=3)
 		requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 		resurl=r.url
-		if "https://google.com/" in resurl:
-			print ("========================================================================")
-			print (Style.RESET_ALL+Fore.GREEN+Style.DIM+line+Fore.YELLOW+" Vulnerable "+"Payload -> "+Fore.CYAN+payload+Style.RESET_ALL).strip()
-			print ("========================================================================")
+		if any(py in resurl for py in Redirlist):
+			print ("===================================================================")
+			print ("[+] "+Style.RESET_ALL+Fore.GREEN+Style.DIM+line+Fore.YELLOW+" Vulnerable "+"Payload -> "+Fore.CYAN+payload+Style.RESET_ALL).strip()
+			print ("===================================================================")
+			Redirbuff.append(line)
 		else:
 			pass
 	except:
 		pass
+	
 
-
-
-def main(list):
-	threads = []		
-	with open('payloads.txt') as f:
+def InitiateRedir(list):
+	with open('orpayloads.txt') as f:
 		payloads = f.read().splitlines()
 		file = open(list,"r")
 		for line in file:
@@ -57,15 +44,43 @@ def main(list):
 				domain = line.rstrip()
 				furl = "http://"+domain+(payload.rstrip())
 				print (Style.RESET_ALL+furl)
-				operate(furl,domain, payload)
+				Redirector(furl,domain, payload)
 
 
+def GenerateRedirBuf():
+	testbuf = []
+	for red in Redirbuff:
+		if red not in testbuf:
+			testbuf.append(red)
+	return testbuf
+
+'''
+CRLF Routine
+
+def InitiateCRLF(list):
+	with open ('crlfpayloads') as f:
+		payloads = f.read().splitlines()
+		file = open(list,"r")
+'''
+
+def main(list):
+	# Flag parse and do redir and crlf checks
+	InitiateRedir(list)		
+	
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python spine.py inputlist")
         sys.exit()
     else:
-    	banner()
-    	print (Fore.YELLOW+"[-] Starting OpenRedirection Check..."+"\n")
-    	main(sys.argv[1])
+    	print ("\n"+Fore.YELLOW+"[-] Initiating OpenRedirection Check..."+"\n")
+    	try:
+    		main(sys.argv[1])
+    		print ("\n\n")
+    		print GenerateRedirBuf()		
+    	except KeyboardInterrupt:
+    		print(Style.RESET_ALL+Fore.GREEN+Style.DIM+"\r\n[+] Finished!"+Style.RESET_ALL)
+    		try:
+    			sys.exit(0)
+	        except SystemExit:
+	            os._exit(0)

@@ -36,7 +36,7 @@ def Redirector(url,line,payload):
 	
 
 def InitiateRedir(list):
-	with open('payloads.txt') as f:
+	with open('orpayloads.txt') as f:
 		payloads = f.read().splitlines()
 		file = open(list,"r")
 		for line in file:

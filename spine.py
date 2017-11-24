@@ -24,11 +24,12 @@ def Redirector(url,line,payload):
 		r = requests.get(url,verify=True, allow_redirects=True,timeout=3)
 		requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 		resurl=r.url
-		if any(py in resurl for py in Redirlist):
-			print ("===================================================================")
-			print ("[+] "+Style.RESET_ALL+Fore.GREEN+Style.DIM+line+Fore.YELLOW+" Vulnerable "+"Payload -> "+Fore.CYAN+payload+Style.RESET_ALL).strip()
-			print ("===================================================================")
-			Redirbuff.append(line)
+		for re in Redirlist:
+			if resurl.startswith(re):
+				print ("===================================================================")
+				print ("[+] "+Style.RESET_ALL+Fore.GREEN+Style.DIM+line+Fore.YELLOW+" Vulnerable "+"Payload -> "+Fore.CYAN+payload+Style.RESET_ALL).strip()
+				print ("===================================================================")
+				Redirbuff.append(line)
 		else:
 			pass
 	except:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
  #################################################
- # Scan OR, CRLF, CORS and others on Large Scan  #
+ # Scan Open Redirection on Large Scan  #
  # by: Intercept9                                #
  # twitter.com/_SiddhuVarma                      #
  # http://intercept9.gitlab.io/                  #
